@@ -9,6 +9,7 @@ var app = server.app;
 
 chai.use(chaiHttp);
 
+debugger
 describe('App name', function(){
   before(function(done){
     server.runServer(function(){
@@ -21,11 +22,20 @@ describe('App name', function(){
                   });
     });
   });
+  it("should populate the database on prepop POST route", function(done){
+    chai.request(app)
+    .post("/prepop")
+    .end(function(err,res){
+      res.should.have.status(201);
+      done();
+    });
+  });
   it('should respond with status 200', function(done){
     chai.request(app)
     .get('/')
     .end( function(err, res){
       res.should.have.status(200);
+      console.log(res.body);
       done();
     });
   });

@@ -53,21 +53,21 @@ $(document).ready(function(){
   var postList = $("#post-list");
   var postForm = $("#post-form");
 
-var getPostIndex = function(id){
-  var postIndex;
-  POSTS.forEach(function(post,i){
-    if(post.id == id){
-      postIndex = i;
-    }
-  });
-      return postIndex;
-};
+// var getPostIndex = function(id){
+//   var postIndex;
+//   POSTS.forEach(function(post,i){
+//     if(post.id == id){
+//       postIndex = i;
+//     }
+//   });
+//       return postIndex;
+// };
 
 //get full post
-var getFullPost = function(id){
-  var postIndex = getPostIndex(id);
-  return POSTS[postIndex];
-}
+// var getFullPost = function(id){
+//   var postIndex = getPostIndex(id);
+//   return POSTS[postIndex];
+// }
 
 var populatePostForm = function(id){
   //var post = getFullPost(id);
@@ -98,14 +98,17 @@ fullPostBox.children(".close-x").on("click",closePost);
 var listSinglePost = function(post){
   var prettyTime = moment(post.timestamp).format("MM-DD-YYYY @ h:mm a");
   var postSummaryTemplate = $(".templates > .post-summary").clone();
-  postSummaryTemplate.attr("id",post.id);
+  postSummaryTemplate.attr("id",post._id);
   postSummaryTemplate.children(".post-info").text(post.subject+" .... "+prettyTime);
   postList.append(postSummaryTemplate);  
 }
 
 var listAllPosts = function(allPosts){
-  allPosts.forEach(listSinglePost);
-  postList.append("<br>");
+  postList.text("");
+  $.getJSON("/",function(allPosts){
+    allPosts.forEach(listSinglePost);
+    postList.append("<br>");
+  });
 }
 
 //Author post
@@ -114,7 +117,7 @@ var postPost = function(post, allPosts){
 }
 var createPost = function(subject, body){
   var post = new Post(subject,body);
-  postPost(post, POSTS);
+
 }
 //Edit post
 
@@ -171,7 +174,18 @@ $("#post-list").on("click",".post-summary > .delete", function(){
   listAllPosts(POSTS);
 });
 
-
+$.ajax({
+  url:"/prepop",
+  dataType:"jsonp",
+  type:"PUT",
+  success:function(){
+    console.log("populated goodies");
+  },
+  error:function(jqXHR, error){
+    console.log(jqXHR);
+    console.log(error);
+  }
+});
 listAllPosts(POSTS);
 
 
