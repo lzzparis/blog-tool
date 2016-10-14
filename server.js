@@ -9,6 +9,18 @@ var app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+var promiseCreate = function(newPost){
+  return Promise(function(resolve,reject){
+    Post.create(newPost,function(err,createdPost){
+      if(err || !createdPost){
+        reject(err);
+        return;
+      }
+      resolve(createdPost);
+    });
+  });
+};
+
 app.post("/prepop", function(req, res){
   var prePopData = [
     { subject: "Blog post 1", 
@@ -40,22 +52,25 @@ app.post("/prepop", function(req, res){
   var dbResponses = [];
   prePopData.forEach(function(post){
     console.log("inside foreach",post);
-    Post.create(post,function(err,post){
-      console.log("inside create callback");
-      console.log(post.subject);
-      if(err || !post){
-        console.log("ERRORRRORRROOORRRR",err);
-        res.status(500).json({message:"Internal server error"}); 
-        internalError = err;
+    promiseCreate.then(function(createdPost, error){
+      if(error){
+        internalError = error;
         return;
       }
-      dbResponses.push(post);
-    });
+      else{
+        dbResponses.push(post);
+      }
+    }); 
   });
-  if(internalError){return internalError;}
+  if(internalError){
+    res.status(500).json({message:"Internal server error"}); 
+    return;
+  }
   res.status(201).json(dbResponses);
 
 });
+
+
 
 
 app.get("/allPosts", function(req, res){
