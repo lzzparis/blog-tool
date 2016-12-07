@@ -10,9 +10,9 @@ var app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-app.get("/all",function(req,res){
-  Post.find(function(err, posts){
-    if(err || !posts){
+app.get("/all", function(req,res) {
+  Post.find(function(err, posts) {
+    if(err || !posts) {
       res.status(500).json({message:"Internal server error"}); 
       return;
     }
@@ -20,10 +20,10 @@ app.get("/all",function(req,res){
   });
 });
 
-app.get("/:id",function(req,res){
+app.get("/:id", function(req,res) {
   var id = req.params.id;
-  Post.findOne({_id:id}, function(err, post){
-    if(err || !post){
+  Post.findOne({_id:id}, function(err,post) {
+    if(err || !post) {
       res.status(500).json({message:"Internal server error"}); 
       return;
     }
@@ -32,15 +32,15 @@ app.get("/:id",function(req,res){
   });
 });
 
-app.post("/", function(req,res){
+app.post("/", function(req,res) {
   var newPost = {
-    subject: req.body.subject,
-    body: req.body.body,
-    img: req.body.img,
+    subject: req.body.subject, 
+    body: req.body.body, 
+    img: req.body.img, 
     timestamp: new Date()
   };
-  Post.create(newPost, function(err, post){
-    if(err || !post){
+  Post.create(newPost, function(err,post) {
+    if(err || !post) {
       res.status(500).json({message:"Internal server error"});
       return;
     }
@@ -48,16 +48,16 @@ app.post("/", function(req,res){
   });
 });
 
-app.put("/:id", function(req,res){
+app.put("/:id", function(req,res) {
   var id = req.params.id;
   var updatedPost = {
-    subject: req.body.subject,
-    body: req.body.body,
-    img: req.body.img,
+    subject: req.body.subject, 
+    body: req.body.body, 
+    img: req.body.img, 
     timestamp: new Date()
   };
-  Post.findOneAndUpdate({_id:id},updatedPost,function(err, post){
-    if(err || !post){
+  Post.findOneAndUpdate({_id:id}, updatedPost,function(err,post) {
+    if(err || !post) {
       res.status(500).json({message:"Internal server error"});
       return;
     }
@@ -65,10 +65,10 @@ app.put("/:id", function(req,res){
   });
 });
 
-app.delete("/:id", function(req,res){
+app.delete("/:id", function(req,res) {
   var id = req.params.id;
-  Post.findOneAndRemove({_id:id},function(err,post){
-    if(err || !post){
+  Post.findOneAndRemove({_id:id}, function(err,post) {
+    if(err || !post) {
       res.status(500).json({message:"Internal server error"});
       return;
     }
@@ -76,23 +76,23 @@ app.delete("/:id", function(req,res){
   })
 });
 
-var runServer = function(callback){
-  mongoose.connect(config.DATABASE_URL, function(err){
-    if(err && callback){
+var runServer = function(callback) {
+  mongoose.connect(config.DATABASE_URL, function(err) {
+    if(err && callback) {
       return callback(err);
     }
-    app.listen(config.PORT, function(){
+    app.listen(config.PORT, function() {
       console.log("Listenting on localhost:" + config.PORT);
-      if (callback){
+      if (callback) {
         callback();
       }
     });
   });
 };
 
-if (require.main === module){
-  runServer(function(err){
-    if(err){
+if (require.main === module) {
+  runServer(function(err) {
+    if(err) {
       console.error(err);
     }
   });
