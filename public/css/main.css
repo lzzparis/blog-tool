@@ -36,6 +36,31 @@ p {
   float:right;
 }
 
+.toolbar {
+  margin: 0;
+  width: 100%;
+  background-color: #424285;
+  color: white;
+  text-align: center;
+}
+
+.toolbar-text {
+  margin: 0;
+  padding: 0.5rem;
+  display: inline-block;
+}
+
+.toolbar-text a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.toolbar-text a:hover {
+  text-decoration: underline;
+}
+
+
 .form-field{
   width:98%;
   margin:1%;
